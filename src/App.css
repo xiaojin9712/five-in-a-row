@@ -36,3 +36,30 @@
     transform: rotate(360deg);
   }
 }
+
+
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  /* background-color: #f00; */
+  transition: all .2s ease-in-out;
+}
+
+.App svg {
+  background-color: #fff;
+}
+
+.blue {
+  background-color: #000119;
+}
+
+.red {
+  background-color: #e3001a;
+}
+
+circle {
+  /* transition: all .1s linear; */
+}
