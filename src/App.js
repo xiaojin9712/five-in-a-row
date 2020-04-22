@@ -1,10 +1,16 @@
+/**
+ * Author: JIN XIAO
+ * Email: xiaojin971212@gmail.com
+ */
 import React from "react";
 import { useSpring, animated as a } from "react-spring";
 import Container from "./Container";
 import CanvasVersion from "./Canvas";
 import "./App.css";
 
+// 棋格大小
 const GAP = 40;
+// 棋盘大小
 const BORDER_WIDTH = 400;
 const ITEM = BORDER_WIDTH / GAP;
 const LAYOUT_WIDTH = BORDER_WIDTH;
@@ -13,6 +19,7 @@ const linePositionData = [];
 const generateKey = (pre) => {
   return `${pre}_${Math.random(9)}`;
 };
+// 生成棋盘线坐标
 function generateLineData() {
   for (let j = 0; j < ITEM + 1; j++) {
     linePositionData.push({
@@ -39,10 +46,10 @@ function generateLineData() {
     });
   }
 }
+
 generateLineData(linePositionData);
 
-console.log(linePositionData);
-
+// Svg 棋盘线组件
 function Line(props) {
   const { start, end } = props;
   return (
@@ -56,7 +63,7 @@ function Line(props) {
     />
   );
 }
-
+// 棋子组件
 function Circle(props) {
   const { x, y, type, defaultType } = props;
   return (
@@ -72,14 +79,14 @@ function Circle(props) {
 
 let positions = [];
 
-for (let index = 0; index < ITEM+1; index++) {
+for (let index = 0; index < ITEM + 1; index++) {
   let row = [];
-  for (let j = 0; j < ITEM+1; j++) {
+  for (let j = 0; j < ITEM + 1; j++) {
     row.push("empty");
   }
   positions.push(row);
 }
-
+// 水平检查
 function checkHorizontal(i, j) {
   let left = i,
     right = i;
@@ -104,7 +111,7 @@ function checkHorizontal(i, j) {
     ) {
       break;
     }
-    if ((left > 0 && left < ITEM - 1) && (right > 0 && right < ITEM - 1)) {
+    if (left > 0 && left < ITEM - 1 && right > 0 && right < ITEM - 1) {
       if (right - left >= 3) {
         flag = true;
         break;
@@ -115,12 +122,12 @@ function checkHorizontal(i, j) {
         break;
       }
     }
-    
+
     index++;
   }
   return flag;
 }
-
+// 对角线检查
 function checkDiagonal(i, j) {
   let left = i,
     top = j,
@@ -146,7 +153,7 @@ function checkDiagonal(i, j) {
     ) {
       break;
     }
-    if ((left > 0 && left < ITEM - 1) && (right > 0 && right < ITEM - 1)) {
+    if (left > 0 && left < ITEM - 1 && right > 0 && right < ITEM - 1) {
       if (right - left >= 3) {
         flag = true;
         break;
@@ -161,7 +168,7 @@ function checkDiagonal(i, j) {
   }
   return flag;
 }
-
+// 反对角线检查
 function checkDiagonalReverse(i, j) {
   let left = i,
     top = j,
@@ -180,12 +187,14 @@ function checkDiagonalReverse(i, j) {
       bottom++;
     }
     if (
-      positions[left - 1] && positions[left - 1][top - 1] != value &&
-      positions[right + 1] && positions[right + 1][bottom + 1] != value
+      positions[left - 1] &&
+      positions[left - 1][top - 1] != value &&
+      positions[right + 1] &&
+      positions[right + 1][bottom + 1] != value
     ) {
       break;
     }
-    if ((left > 0 && left < ITEM - 1) && (right > 0 && right < ITEM - 1)) {
+    if (left > 0 && left < ITEM - 1 && right > 0 && right < ITEM - 1) {
       if (right - left >= 3) {
         flag = true;
         break;
@@ -201,7 +210,7 @@ function checkDiagonalReverse(i, j) {
   }
   return flag;
 }
-
+// 垂直检查
 function checkVertical(i, j) {
   let left = j,
     right = j;
@@ -217,7 +226,7 @@ function checkVertical(i, j) {
     if (positions[i][left - 1] !== value && positions[i][right + 1] !== value) {
       break;
     }
-    if ((left > 0 && left < ITEM - 1) && (right > 0 && right < ITEM - 1)) {
+    if (left > 0 && left < ITEM - 1 && right > 0 && right < ITEM - 1) {
       if (right - left >= 3) {
         flag = true;
         break;
@@ -263,26 +272,14 @@ class App extends React.Component {
     this.setState({
       svgPosition: this.board.current.getBoundingClientRect(),
     });
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       this.setState({
         svgPosition: this.board.current.getBoundingClientRect(),
       });
-    })
+    });
   }
 
   onMouseMove = (e) => {
-    // const throttle = (func, limit) => {
-    //   let inThrottle
-    //   return function() {
-    //     const args = arguments
-    //     const context = this
-    //     if (!inThrottle) {
-    //       func.apply(context, args)
-    //       inThrottle = true
-    //       setTimeout(() => inThrottle = false, limit)
-    //     }
-    //   }
-    // }
     const {
       svgPosition: { x, y },
     } = this.state;
@@ -335,24 +332,24 @@ class App extends React.Component {
         }
       );
     } else {
-      console.log("o");
+      console.log("This position has been occupied."); //位置被占用，不做任何操作
     }
   };
-
+  // 检查是否胜利
   check(i, j) {
-    const a = checkHorizontal(i, j);
-    const b = checkDiagonal(i, j);
-    const c = checkVertical(i, j);
-    const d = checkDiagonalReverse(i, j);
+    const a = checkHorizontal(i, j); //横向查找
+    const b = checkDiagonal(i, j); //对角线查找
+    const c = checkVertical(i, j); //竖向查找
+    const d = checkDiagonalReverse(i, j); //反对角线查找
+
     if (a || c || b || d) {
       this.setState({
         win: true,
-        dirty: false
+        dirty: false,
       });
-      // this.reset();
     }
   }
-
+  // 重置
   reset = () => {
     positions = [];
     for (let index = 0; index < ITEM; index++) {
@@ -375,7 +372,7 @@ class App extends React.Component {
       dirty: false,
     });
   };
-
+  // 悔棋
   handleRegret = () => {
     const { step, type, position, regret } = this.state;
     if (step > 0 && !regret) {
@@ -389,6 +386,7 @@ class App extends React.Component {
       });
     }
   };
+  // 撤销悔棋
   handleCancel = () => {
     const { step, type, position, regret } = this.state;
     if (regret) {
@@ -426,11 +424,15 @@ class App extends React.Component {
         <div className="wrapper">
           <div className="row">
             <img src={require("./assets/1.png")} alt="" />
-            <img src={require("./assets/5.png")} alt="" className="logo"/>
+            <img src={require("./assets/5.png")} alt="" className="logo" />
             <img src={require("./assets/2.png")} alt="" />
           </div>
           <div className="container">
-            <div className={`left ${(cur !== true && regret) ? "disableSection" : ""}`}>
+            <div
+              className={`left ${
+                cur !== true && regret ? "disableSection" : ""
+              }`}
+            >
               <div className={`player ${type ? "active" : ""}`}></div>
               <button
                 className={`button red ${
@@ -497,7 +499,11 @@ class App extends React.Component {
                 </div>
               }
             />
-            <div className={`right ${(cur !== false && regret) ? "disableSection" : ""}`}>
+            <div
+              className={`right ${
+                cur !== false && regret ? "disableSection" : ""
+              }`}
+            >
               <div className={`player ${!type ? "active" : ""}`}></div>
 
               <button

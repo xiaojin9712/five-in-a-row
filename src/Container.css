@@ -1,3 +1,7 @@
+/**
+ * Author: JIN XIAO
+ * Email: xiaojin971212@gmail.com
+ */
 .scene {
   width: 400px;
   height: 400px;
@@ -19,8 +23,6 @@
   backface-visibility: hidden;
 }
 
-.card__face--front {
-}
 
 .card__face--back {
   transform: rotateX(-180deg);

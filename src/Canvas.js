@@ -1,9 +1,13 @@
+/**
+ * Author: JIN XIAO
+ * Email: xiaojin971212@gmail.com
+ */
 import React, { useEffect, useState } from "react";
 
 export default function Canvas(props) {
   const { width, height, lineData, position, handleClick, handleMove } = props;
   const [ctx, setCtx] = useState(null);
-//   const [ctx, setCtx] = useState(null);
+  // 画线
   function drawLine(ctx) {
       console.log(ctx)
     lineData.forEach((i) => {
@@ -13,7 +17,7 @@ export default function Canvas(props) {
       ctx.stroke();
     });
   }
-
+// 画棋子
   function drawCircle(ctx) {
     position.forEach((i) => {
       ctx.beginPath();
@@ -29,7 +33,7 @@ export default function Canvas(props) {
 
       var ctxr = el.getContext("2d");
       setCtx(ctxr);
-    // TODO: The code bellow can provide solution for retina screen, but it also cause duplicated render.
+        // 兼容Retina屏
       var pixelRatio = window.devicePixelRatio || 1;
       el.style.width = el.width + "px";
       el.style.height = el.height + "px";
